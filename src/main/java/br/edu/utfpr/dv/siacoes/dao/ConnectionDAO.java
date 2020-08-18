@@ -88,5 +88,21 @@ public class ConnectionDAO {
 			stmt.execute("SET GLOBAL max_allowed_packet=1024*1024*14;");	
 		}
 	}
+
+	public static void closeConn (Statement stmt, ResultSet rs, Connection conn) throws SQLException{
+		if ((rs != null) && !rs.isClosed()){
+			rs.close();
+		};
+		if ((stmt != null) && !stmt.isClosed()){
+			stmt.close();
+		};
+		if ((conn != null) && !conn.isClosed()){
+			conn.close();
+		};
+	}
+
+	public static void insertStatement(Statement stmt) throws SQLException{
+		
+	}
 	
 }
