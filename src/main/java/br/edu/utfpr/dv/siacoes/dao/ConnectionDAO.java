@@ -100,9 +100,5 @@ public class ConnectionDAO {
 			conn.close();
 		};
 	}
-
-	public static void insertStatement(Statement stmt) throws SQLException{
-		
-	}
 	
 }
