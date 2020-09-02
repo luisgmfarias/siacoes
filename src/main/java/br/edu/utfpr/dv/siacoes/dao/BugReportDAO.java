@@ -17,42 +17,39 @@ import br.edu.utfpr.dv.siacoes.model.User;
 public class BugReportDAO {
 	
 	public BugReport findById(int id) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
 		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT bugreport.*, \"user\".name " + 
-				"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
-				"WHERE idBugReport = ?");
+		try(Connection conn = ConnectionDAO.getInstance().getConnection();
+			PreparedStatement stmt = conn.prepareStatement("SELECT bugreport.*, \"user\".name " + 
+						"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
+						"WHERE idBugReport = ?");){
+			
+			
 		
 			stmt.setInt(1, id);
 			
-			rs = stmt.executeQuery();
 			
-			if(rs.next()){
-				return this.loadObject(rs);
-			}else{
-				return null;
+			
+			try(ResultSet rs = stmt.executeQuery();){
+				
+				
+				if(rs.next()){
+					return this.loadObject(rs);
+				}else{
+					return null;
+				}
 			}
-		}finally{
-			ConnectionDAO.closeConn(stmt, rs, conn);
+			
 		}
 	}
 	
 	public List<BugReport> listAll() throws SQLException{
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
 		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
+		try(Connection conn = ConnectionDAO.getInstance().getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT bugreport.*, \"user\".name " +
+						"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
+						"ORDER BY status, reportdate");){
 			
-			rs = stmt.executeQuery("SELECT bugreport.*, \"user\".name " +
-					"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
-					"ORDER BY status, reportdate");
 			List<BugReport> list = new ArrayList<BugReport>();
 			
 			while(rs.next()){
@@ -60,19 +57,15 @@ public class BugReportDAO {
 			}
 			
 			return list;
-		}finally{
-			ConnectionDAO.closeConn(stmt, rs, conn);
 		}
 	}
 	
 	public int save(BugReport bug) throws SQLException{
 		boolean insert = (bug.getIdBugReport() == 0);
-		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rs = null;
 		
-		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+		try(Connection conn = ConnectionDAO.getInstance().getConnection();){
+			
 			
 			if(insert){
 				stmt = conn.prepareStatement("INSERT INTO bugreport(idUser, module, title, description, reportDate, type, status, statusDate, statusDescription) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -101,16 +94,16 @@ public class BugReportDAO {
 			stmt.execute();
 			
 			if(insert){
-				rs = stmt.getGeneratedKeys();
+				try(ResultSet rs = stmt.getGeneratedKeys();){
 				
-				if(rs.next()){
-					bug.setIdBugReport(rs.getInt(1));
+				
+					if(rs.next()){
+						bug.setIdBugReport(rs.getInt(1));
+					}
 				}
 			}
 			
 			return bug.getIdBugReport();
-		}finally{
-			ConnectionDAO.closeConn(stmt, rs, conn);
 		}
 	}
 	

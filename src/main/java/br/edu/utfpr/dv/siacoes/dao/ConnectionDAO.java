@@ -89,16 +89,5 @@ public class ConnectionDAO {
 		}
 	}
 
-	public static void closeConn (Statement stmt, ResultSet rs, Connection conn) throws SQLException{
-		if ((rs != null) && !rs.isClosed()){
-			rs.close();
-		};
-		if ((stmt != null) && !stmt.isClosed()){
-			stmt.close();
-		};
-		if ((conn != null) && !conn.isClosed()){
-			conn.close();
-		};
-	}
 	
 }
