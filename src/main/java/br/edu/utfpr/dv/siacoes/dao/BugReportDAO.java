@@ -14,7 +14,7 @@ import br.edu.utfpr.dv.siacoes.model.BugReport.BugStatus;
 import br.edu.utfpr.dv.siacoes.model.Module;
 import br.edu.utfpr.dv.siacoes.model.User;
 
-public class BugReportDAO {
+public class BugReportDAO extends handleStructure<BugReport>{
 	
 	public BugReport findById(int id) throws SQLException{
 		
@@ -124,6 +124,18 @@ public class BugReportDAO {
 		bug.setStatusDescription(rs.getString("statusDescription"));
 		
 		return bug;
+	}
+
+	@Override
+	public List<BugReport> listAll(boolean onlyActive) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int save(int idUser, BugReport unit) throws SQLException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
